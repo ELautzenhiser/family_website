@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Memoirs{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+	<ul>
+		{% for memoir in memoirs %}
+			<li>{{ memoir['name'] }} by {{ memoir['author'] }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

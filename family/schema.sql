@@ -1,10 +1,11 @@
 DROP TABLE IF EXISTS People;
 CREATE TABLE People (
 person_id INTEGER PRIMARY KEY AUTOINCREMENT,
-f_name TEXT NOT NULL,
-m_name TEXT,
-l_name TEXT NOT NULL,
-gender 
+first_name TEXT NOT NULL,
+middle_name TEXT,
+last_name TEXT NOT NULL,
+maiden_name TEXT,
+gender TEXT,
 birth_year INTEGER,
 birth_month INTEGER,
 birth_day INTEGER,
@@ -34,6 +35,9 @@ CREATE TABLE Memoirs (
 memoir_id INTEGER PRIMARY KEY AUTOINCREMENT,
 name TEXT NOT NULL,
 author_id INTEGER NOT NULL,
+year_written INTEGER,
+subject TEXT,
+filename TEXT,
 FOREIGN KEY (author_id) REFERENCES People (person_id)
 );
 

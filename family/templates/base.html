@@ -1,6 +1,10 @@
 <!doctype html>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <title>{% block title %}{% endblock %} | Family Website</title>
+<nav>
+	<a class="home_button" href="{{ url_for('index') }}">Home</a>
+	<a class="button" href="{{ url_for('memoirs.view_memoirs') }}">Memoirs</a>
+</nav>
 <section class='content'>
 	<header>
 		{% block header %}{% endblock %}

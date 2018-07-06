@@ -22,4 +22,7 @@ def create_app():
     def index():
         return render_template('index.html')
 
+    from . import memoirs
+    app.register_blueprint(memoirs.bp)
+
     return app
