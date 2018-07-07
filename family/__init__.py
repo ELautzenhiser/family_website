@@ -25,4 +25,7 @@ def create_app():
     from . import memoirs
     app.register_blueprint(memoirs.bp)
 
+    from . import family_members
+    app.register_blueprint(family_members.bp)
+
     return app

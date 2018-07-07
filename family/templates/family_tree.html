@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block header %}
+	<h1>{% block title %}Family Tree{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+	<ul>
+	{% for person in people %}
+		<li>{{ person['first_name'] }} {{ person['last_name'] }}
+			{% if person['birth_year'] %}
+				- born {{ person['birth_year'] }}
+			{% endif %}
+		</li>
+	{% endfor %}
+{% endblock %}

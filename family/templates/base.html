@@ -3,6 +3,7 @@
 <title>{% block title %}{% endblock %} | Family Website</title>
 <nav>
 	<a class="home_button" href="{{ url_for('index') }}">Home</a>
+	<a class="button" href="{{ url_for('family.view_family_tree') }}">Family Tree</a>
 	<a class="button" href="{{ url_for('memoirs.view_memoirs') }}">Memoirs</a>
 </nav>
 <section class='content'>

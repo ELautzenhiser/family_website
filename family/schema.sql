@@ -9,6 +9,9 @@ gender TEXT,
 birth_year INTEGER,
 birth_month INTEGER,
 birth_day INTEGER,
+death_year INTEGER,
+death_month INTEGER,
+death_day INTEGER,
 city TEXT,
 state TEXT,
 mother_id INTEGER,
@@ -47,5 +50,21 @@ memoir_id INTEGER NOT NULL,
 person_id INTEGER NOT NULL,
 PRIMARY KEY (memoir_id, person_id),
 FOREIGN KEY (memoir_id) REFERENCES Memoirs (memoir_id),
+FOREIGN KEY (person_id) REFERENCES People (person_id)
+);
+
+DROP TABLE IF EXISTS Photos;
+CREATE TABLE Photos (
+photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+filename TEXT NOT NULL,
+description TEXT
+);
+
+DROP TABLE IF EXISTS Photo_tags;
+CREATE TABLE Photo_tags (
+photo_id INTEGER NOT NULL,
+person_id INTEGER NOT NULL,
+PRIMARY KEY (photo_id, person_id),
+FOREIGN KEY (photo_id) REFERENCES Photos (photo_id),
 FOREIGN KEY (person_id) REFERENCES People (person_id)
 );
