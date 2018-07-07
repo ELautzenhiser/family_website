@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block header %}
+	<h1>{% block title %}{{ memoir['name'] }}{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+	<h3>
+		Written by {{ memoir['author_name'] }}
+		{% if memoir['year_written'] %}
+			in {{ memoir['year_written'] }}
+		{% endif %}
+		{% if memoir['subject'] %}
+			 about {{ memoir['subject'] }}
+		{% endif %}
+	</h3>
+	{{ memoir_text|safe }}
+{% endblock %}

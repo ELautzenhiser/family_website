@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
-
 {% block header %}
 	<h1>{% block title %}Memoirs{% endblock %}</h1>
 {% endblock %}
-
 {% block content %}
 	<ul>
 		{% for memoir in memoirs %}
-			<li>{{ memoir['name'] }} by {{ memoir['author'] }}</li>
+			<li>
+				<a href="{{ url_for('memoirs.memoir', memoir_id=memoir['memoir_id']) }}">
+					{{ memoir['name'] }} by {{ memoir['author_name'] }}
+				</a>
+			</li>
 		{% endfor %}
 	</ul>
 {% endblock %}

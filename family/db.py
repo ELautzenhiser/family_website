@@ -42,3 +42,26 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+
+def query_db(query, num_rows=-1):
+    db = open_db()
+    results = db.execute(query)
+    if num_rows == 1:
+        return results.fetchone()
+    elif num_rows == -1:
+        return results.fetchall()
+    else:
+        return cursor.fetchmany(num_rows)
+
+def get_all_rows(table):
+    query = 'SELECT * FROM {0}'.format(table)
+    return query_db(query, -1)
+
+def get_db_row(table, id):
+    table_ids = {'people': 'person_id', 'memoir': 'memoir_id'}
+    id_type = table_ids.get(table.lower())
+    if not id_type:
+        return None
+    query = 'SELECT * FROM {0} WHERE {1}={2}'.format(table, id_type, id)
+    return query_db(query, 1)
