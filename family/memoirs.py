@@ -1,6 +1,6 @@
 import os
-from flask import Blueprint, Flask, render_template, current_app
-from .db import open_db, query_db
+from flask import Blueprint, render_template
+from .db import query_db
 
 bp = Blueprint('memoirs', __name__)
 
