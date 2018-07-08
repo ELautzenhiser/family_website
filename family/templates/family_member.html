@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}{{ family_member['name'] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{{ family_member['content']|safe }}
+{% if family_member['photos'] %}
+	<h3>Photos</h3>
+	{% for photo in family_member['photos'] %}
+		<img src="{{ photo['file_location'] }}"></img>
+	{% endfor %}
+{% endif %}
+{% if family_member['memoirs'] %}
+	<h3>Memoirs</h3>
+	<ul>
+	{% for memoir in family_member['memoirs'] %}
+		<li>
+			<a href="{{ url_for('memoirs.memoir', memoir_id=memoir['memoir_id']) }}">
+				{{ memoir['name'] }} by {{ memoir['author_name'] }}
+			</a>
+		</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+{% endblock %}

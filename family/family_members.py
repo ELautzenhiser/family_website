@@ -1,6 +1,6 @@
 import os
-from flask import Blueprint, render_template
-from .db import query_db, get_all_rows
+from flask import Blueprint, current_app, render_template
+from .db import query_db, get_all_rows, get_db_row
 
 bp = Blueprint('family', __name__)
 
@@ -9,4 +9,29 @@ def view_family_tree():
     people = get_all_rows('People')
     return render_template('family_tree.html', people=people)
 
+
+@bp.route('/family_member/<int:person_id>')
+def view_family_member(person_id):
+    person = get_db_row('People', person_id)
+    memoirs = get_memoirs(person_id)
+    photos = get_photos(person_id)
+    family_member = {'photos' : photos, 'memoirs' : memoirs}
+    family_member['content'] = '<h3>{0} {1}</h3>'.format(person['first_name'],person['last_name'])
+    return render_template('family_member.html', family_member=family_member)
+
+def get_memoirs(person_id):
+    query = 'SELECT m.memoir_id, m.name, ' \
+            'p.first_name || " " || p.last_name as author_name ' \
+            'FROM Memoirs m INNER JOIN People p ON m.author_id=p.person_id ' \
+            'LEFT JOIN Memoir_tags mt on m.memoir_id=mt.memoir_id ' \
+            'WHERE (p.person_id={0} OR mt.person_id={0})'.format(person_id)
+    return query_db(query)
+
+def get_photos(person_id):
+    PHOTO_FOLDER = os.path.join(current_app.instance_path, 'images\\')
+    query = 'SELECT "{0}" || p.filename as file_location, ' \
+            'p.description FROM Photos p ' \
+            'INNER JOIN Photo_tags pt on p.photo_id=pt.photo_id ' \
+            'WHERE pt.person_id={1}'.format(PHOTO_FOLDER, person_id)
+    return query_db(query)
     

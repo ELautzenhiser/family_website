@@ -16,6 +16,7 @@ city TEXT,
 state TEXT,
 mother_id INTEGER,
 father_id INTEGER,
+blurb_file TEXT,
 FOREIGN KEY (mother_id) REFERENCES People (person_id),
 FOREIGN KEY (father_id) REFERENCES People (person_id)
 );
