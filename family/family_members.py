@@ -19,6 +19,9 @@ def view_family_member(person_id):
     family_member['display_name'] = get_display_name(person)
     family_member['full_name'] = get_full_name(person)
     family_member['content'] = get_person_html(person)
+    family_member['parents'] = get_parents(person_id)
+    family_member['siblings'] = get_siblings(person_id)
+    family_member['children'] = get_children(person_id)
     return render_template('family_member.html', family_member=family_member)
 
 def get_memoirs(person_id):
@@ -57,4 +60,24 @@ def get_person_html(person):
             content += file.read()
     return content
 
+def get_parents(person_id):
+    name_sql = display_name('p2', 'parent_name')
+    query = 'SELECT p2.person_id, {0} FROM People p INNER JOIN People p2 ' \
+            'ON p2.person_id IN (p.mother_id, p.father_id) ' \
+            'WHERE p.person_id={1}'.format(name_sql, person_id)
+    return query_db(query)
+
+def get_siblings(person_id):
+    name_sql = display_name('p2', 'sibling_name')
+    query = 'SELECT p2.person_id, {0} FROM People p INNER JOIN People p2 ' \
+            'ON (p.mother_id=p2.mother_id OR p.father_id=p2.father_id) AND p.person_id!=p2.person_id ' \
+            'WHERE p.person_id={1}'.format(name_sql, person_id)
+    return query_db(query)
+
+def get_children(person_id):
+    name_sql = display_name('p2', 'child_name')
+    query = 'SELECT p2.person_id, {0} FROM People p INNER JOIN People p2 ' \
+            'ON p.person_id IN (p2.mother_id, p2.father_id) ' \
+            'WHERE p.person_id={1}'.format(name_sql, person_id)
+    return query_db(query)
     

@@ -24,4 +24,31 @@
 	{% endfor %}
 	</ul>
 {% endif %}
+{% if family_member['parents'] %}
+	<div class='links_div'>
+		<h4 class='link_header'>Parents</h4>
+		{% for parent in family_member['parents'] %}
+			<a href="{{ url_for('family.view_family_member', person_id=parent['person_id']) }}" class='family_link'>
+				{{ parent['parent_name'] }}</a>
+		{% endfor %}
+	</div>
+{% endif %}
+{% if family_member['siblings'] %}
+	<div class='links_div'>
+		<h4 class='link_header'>Siblings</h4>
+		{% for sibling in family_member['siblings'] %}
+			<a href="{{ url_for('family.view_family_member', person_id=sibling['person_id']) }}" class='family_link'>
+				{{ sibling['sibling_name'] }}</a>
+		{% endfor %}
+	</div>
+{% endif %}
+{% if family_member['children'] %}
+	<div class='links_div'>
+		<h4 class='link_header'>Children</h4>
+		{% for child in family_member['children'] %}
+			<a href="{{ url_for('family.view_family_member', person_id=child['person_id']) }}" class='family_link'>
+				{{ child['child_name'] }}</a>
+		{% endfor %}
+	</div>
+{% endif %}
 {% endblock %}

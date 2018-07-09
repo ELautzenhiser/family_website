@@ -40,3 +40,20 @@ body {
 	width: 80%;
 	align: center
 }
+
+.link_header {
+	margin-left, margin-right: auto;
+	margin-bottom: 5px;
+	align: center;
+}
+
+.links_div {
+	text-align: center;
+}
+
+.family_link:link, .family_link:visited {
+	background-color: black;
+	color: LightGray;
+	text-decoration: none;
+	padding: 4px 6px 4px 6px;
+}
