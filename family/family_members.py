@@ -16,7 +16,8 @@ def view_family_member(person_id):
     memoirs = get_memoirs(person_id)
     photos = get_photos(person_id)
     family_member = {'photos' : photos, 'memoirs' : memoirs}
-    family_member['content'] = '<h3>{0} {1}</h3>'.format(person['first_name'],person['last_name'])
+    family_member['full_name'] = get_full_name(person)
+    family_member['content'] = get_person_html(person)
     return render_template('family_member.html', family_member=family_member)
 
 def get_memoirs(person_id):
@@ -34,4 +35,18 @@ def get_photos(person_id):
             'INNER JOIN Photo_tags pt on p.photo_id=pt.photo_id ' \
             'WHERE pt.person_id={1}'.format(PHOTO_FOLDER, person_id)
     return query_db(query)
+
+def get_full_name(person):
+    if person['middle_name']:
+        return '{0} {1} {2}'.format(person['first_name'],person['middle_name'],person['last_name'])
+    else:
+        return '{0} {1}'.format(person['first_name'],person['last_name'])
+    
+def get_person_html(person):
+    content = ''
+    if person['blurb_file']:
+        filename = os.path.join(current_app.instance_path, 'blurbs', person['blurb_file'])
+        with open(filename, 'r') as file:
+            content += file.read()
+    return content
     
