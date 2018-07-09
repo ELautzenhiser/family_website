@@ -6,6 +6,7 @@
 	<a class="button" href="{{ url_for('family.view_family_tree') }}">Family Tree</a>
 	<a class="button" href="{{ url_for('memoirs.view_memoirs') }}">Memoirs</a>
 </nav>
+<div id='content'>
 <section class='content'>
 	<header>
 		{% block header %}{% endblock %}
@@ -15,3 +16,4 @@
 	{% endfor %}
 	{% block content %}{% endblock %}
 </section>
+</div>
