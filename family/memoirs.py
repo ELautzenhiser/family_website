@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, current_app, render_template
-from .db import query_db
+from .db import query_db, display_name
 
 bp = Blueprint('memoirs', __name__)
 
@@ -18,15 +18,17 @@ def memoir(memoir_id):
 
 
 def get_memoirs():
-    query = 'SELECT m.memoir_id, m.name, p.first_name || " " || p.last_name as author_name ' \
-            'FROM Memoirs m INNER JOIN People p on m.author_id=p.person_id'
+    name_sql = display_name('p','author_name')
+    query = 'SELECT m.memoir_id, m.name, {0} ' \
+            'FROM Memoirs m INNER JOIN People p on m.author_id=p.person_id'.format(name_sql)
     return query_db(query)
 
 def get_memoir_from_id(memoir_id):
+    name_sql = display_name('p', 'author_name')
     query = 'SELECT m.name, m.year_written, m.subject, m.filename, m.author_id, ' \
-            'p.first_name || " " || p.last_name as author_name ' \
+            '{0} ' \
             'FROM Memoirs m INNER JOIN People p on m.author_id=p.person_id ' \
-            'WHERE m.memoir_id={0}'.format(memoir_id)
+            'WHERE m.memoir_id={1}'.format(name_sql, memoir_id)
     return query_db(query, 1)
 
 def get_memoir_from_file(filename):

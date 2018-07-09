@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, current_app, render_template
-from .db import query_db, get_all_rows, get_db_row
+from .db import query_db, get_all_rows, get_db_row, display_name
 
 bp = Blueprint('family', __name__)
 
@@ -16,16 +16,17 @@ def view_family_member(person_id):
     memoirs = get_memoirs(person_id)
     photos = get_photos(person_id)
     family_member = {'photos' : photos, 'memoirs' : memoirs}
+    family_member['display_name'] = get_display_name(person)
     family_member['full_name'] = get_full_name(person)
     family_member['content'] = get_person_html(person)
     return render_template('family_member.html', family_member=family_member)
 
 def get_memoirs(person_id):
-    query = 'SELECT m.memoir_id, m.name, ' \
-            'p.first_name || " " || p.last_name as author_name ' \
+    name_sql = display_name('p', 'author_name')
+    query = 'SELECT m.memoir_id, m.name, {0} ' \
             'FROM Memoirs m INNER JOIN People p ON m.author_id=p.person_id ' \
             'LEFT JOIN Memoir_tags mt on m.memoir_id=mt.memoir_id ' \
-            'WHERE (p.person_id={0} OR mt.person_id={0})'.format(person_id)
+            'WHERE (p.person_id={1} OR mt.person_id={1})'.format(name_sql, person_id)
     return query_db(query)
 
 def get_photos(person_id):
@@ -38,9 +39,15 @@ def get_photos(person_id):
 
 def get_full_name(person):
     if person['middle_name']:
-        return '{0} {1} {2}'.format(person['first_name'],person['middle_name'],person['last_name'])
+        return '{0} {1} {2}'.format(person['first_name'], person['middle_name'], person['last_name'])
     else:
-        return '{0} {1}'.format(person['first_name'],person['last_name'])
+        return '{0} {1}'.format(person['first_name'], person['last_name'])
+
+def get_display_name(person):
+    if person['preferred_name']:
+        return '{0} {1}'.format(person['preferred_name'], person['last_name'])
+    else:
+        return '{0} {1}'.format(person['first_name'], person['last_name'])
     
 def get_person_html(person):
     content = ''
@@ -49,4 +56,5 @@ def get_person_html(person):
         with open(filename, 'r') as file:
             content += file.read()
     return content
+
     

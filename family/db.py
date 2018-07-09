@@ -65,3 +65,8 @@ def get_db_row(table, id):
         return None
     query = 'SELECT * FROM {0} WHERE {1}={2}'.format(table, id_type, id)
     return query_db(query, 1)
+
+def display_name(table_abbreviation, alias='display_name'):
+    query = 'CASE WHEN {0}.preferred_name THEN {0}.preferred_name || " " || {0}.last_name ' \
+            'ELSE {0}.first_name || " " || {0}.last_name END AS {1}'.format(table_abbreviation, alias)
+    return query
