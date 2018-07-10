@@ -6,7 +6,7 @@ bp = Blueprint('family', __name__)
 
 @bp.route('/family_tree')
 def view_family_tree():
-    people = get_all_rows('People')
+    people = get_family_members()
     return render_template('family_tree.html', people=people)
 
 
@@ -80,4 +80,8 @@ def get_children(person_id):
             'ON p.person_id IN (p2.mother_id, p2.father_id) ' \
             'WHERE p.person_id={1}'.format(name_sql, person_id)
     return query_db(query)
+
+def get_family_members():
+    query = 'SELECT * FROM People ORDER BY birth_year, birth_month, birth_day'
+    return query_db(query, -1)
     

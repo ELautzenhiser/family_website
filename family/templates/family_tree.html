@@ -5,7 +5,7 @@
 {% block content %}
 	<ul>
 	{% for person in people %}
-		<li><a href="{{ url_for('family.view_family_member', person_id=person['person_id']) }}">
+		<li><a href="{{ url_for('family.view_family_member', person_id=person['person_id']) }}" class='general_link'>
 		{{ person['first_name'] }} {{ person['last_name'] }}
 			{% if person['birth_year'] %}
 				- born {{ person['birth_year'] }}

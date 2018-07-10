@@ -56,4 +56,15 @@ body {
 	color: LightGray;
 	text-decoration: none;
 	padding: 4px 6px 4px 6px;
+	font-family: 'Trebuchet MS';
+}
+
+.general_link, .general_link:visited {
+	color: black;
+	text-decoration: none;
+	font-family: 'Trebuchet MS';
+}
+
+.general_link:hover, .general_link:active {
+	color: Crimson;
 }

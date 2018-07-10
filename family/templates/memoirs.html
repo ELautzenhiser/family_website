@@ -6,7 +6,7 @@
 	<ul>
 		{% for memoir in memoirs %}
 			<li>
-				<a href="{{ url_for('memoirs.memoir', memoir_id=memoir['memoir_id']) }}">
+				<a href="{{ url_for('memoirs.memoir', memoir_id=memoir['memoir_id']) }}" class='general_link'>
 					{{ memoir['name'] }} by {{ memoir['author_name'] }}
 				</a>
 			</li>
