@@ -26,7 +26,7 @@ def view_family_member(person_id):
 
 def get_memoirs(person_id):
     name_sql = display_name('p', 'author_name')
-    query = 'SELECT m.memoir_id, m.name, {0} ' \
+    query = 'SELECT m.memoir_id, m.title, {0} ' \
             'FROM Memoirs m INNER JOIN People p ON m.author_id=p.person_id ' \
             'LEFT JOIN Memoir_tags mt on m.memoir_id=mt.memoir_id ' \
             'WHERE (p.person_id={1} OR mt.person_id={1})'.format(name_sql, person_id)

@@ -54,6 +54,12 @@ def query_db(query, num_rows=-1):
     else:
         return cursor.fetchmany(num_rows)
 
+def insert_db(query):
+    db = open_db()
+    results = db.execute(query)
+    db.commit()
+    return results.fetchone()
+
 def get_all_rows(table):
     query = 'SELECT * FROM {0}'.format(table)
     return query_db(query, -1)
@@ -66,7 +72,9 @@ def get_db_row(table, id):
     query = 'SELECT * FROM {0} WHERE {1}={2}'.format(table, id_type, id)
     return query_db(query, 1)
 
-def display_name(table_abbreviation, alias='display_name'):
-    query = 'CASE WHEN {0}.preferred_name THEN {0}.preferred_name || " " || {0}.last_name ' \
-            'ELSE {0}.first_name || " " || {0}.last_name END AS {1}'.format(table_abbreviation, alias)
+def display_name(table_abbreviation='', alias='display_name'):
+    if table_abbreviation != '':
+        table_abbreviation += '.'
+    query = 'CASE WHEN {0}preferred_name THEN {0}preferred_name || " " || {0}last_name ' \
+            'ELSE {0}first_name || " " || {0}last_name END AS {1}'.format(table_abbreviation, alias)
     return query

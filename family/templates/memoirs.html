@@ -3,11 +3,13 @@
 	<h1>{% block title %}Memoirs{% endblock %}</h1>
 {% endblock %}
 {% block content %}
+	<a href="{{ url_for('memoirs.create_memoir') }}">Create a new memoir</a>
+	<br>
 	<ul>
 		{% for memoir in memoirs %}
 			<li>
 				<a href="{{ url_for('memoirs.memoir', memoir_id=memoir['memoir_id']) }}" class='general_link'>
-					{{ memoir['name'] }} by {{ memoir['author_name'] }}
+					{{ memoir['title'] }} by {{ memoir['author_name'] }}
 				</a>
 			</li>
 		{% endfor %}

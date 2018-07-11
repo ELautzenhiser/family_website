@@ -38,7 +38,7 @@ PRIMARY KEY (spouse1,spouse2)
 DROP TABLE IF EXISTS Memoirs;
 CREATE TABLE Memoirs (
 memoir_id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT NOT NULL,
+title TEXT NOT NULL,
 author_id INTEGER NOT NULL,
 year_written INTEGER,
 subject TEXT,

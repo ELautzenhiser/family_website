@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block header %}
+	<h1>{% block title %}Edit Memoir{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+	<form method=post enctype=multipart/form-data>
+		<label for='title'>Memoir Title</label>
+		<br>
+		<input id='title' name='title' value='{{ title }}' required>
+		<br><br>
+		<label for='author'>Author</label>
+		<br>
+		<select id='author_id' name='author_id' required>
+			{% if not author %}
+				<option disabled selected value> </option>
+			{% endif %}
+			{% for person in family_members %}
+				<option value="{{ person['person_id'] }}"{% if author==person['person_id'] %} selected{% endif %}>
+					{{ person['display_name'] }}
+				</option>
+			{% endfor %}
+		</select>
+		<br><br>
+		<label for='subject'>Subject</label>
+		<br>
+		<input id='subject' name='subject' value="{{ subject }}">
+		<br><br>
+		<label for='memoir_text'>Memoir</label>
+		<br>
+		<textarea id='memoir_text' name='memoir_text' required>{{ memoir_text }}</textarea>
+		<br><br>
+		<input type=submit name='action' value='Save'>
+		<input type=submit name='action' value='Cancel'>
+	</form>
+{% endblock %}
+	
