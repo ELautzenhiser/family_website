@@ -73,9 +73,8 @@ def create_memoir():
             filename = generate_filename(title, author_id)
             errors = save_memoir_file(filename, memoir_text)
         if not errors:
-            errors = save_memoir_db(title, author_id, subject, filename)
+            save_memoir_db(title, author_id, subject, filename)
         if errors:
-            print("Errors:",errors)
             for error in errors:
                 flash(error)
             return render_template('create_memoir.html',
@@ -130,11 +129,5 @@ def save_memoir_db(title, author_id, subject, filename):
                                                                  2018,
                                                                  subject,
                                                                  filename)
-    success = insert_db(insert_sql)
-    x = query_db('SELECT * FROM Memoirs',-1)
-    for i in x:
-        for val in i:
-            print(val,)
-        print()
-    return success
+    insert_db(insert_sql)
                                                                  

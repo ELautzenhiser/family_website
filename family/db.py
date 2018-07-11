@@ -56,9 +56,8 @@ def query_db(query, num_rows=-1):
 
 def insert_db(query):
     db = open_db()
-    results = db.execute(query)
+    db.execute(query)
     db.commit()
-    return results.fetchone()
 
 def get_all_rows(table):
     query = 'SELECT * FROM {0}'.format(table)
