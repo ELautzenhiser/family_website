@@ -108,7 +108,10 @@ def check_input(title, author_id, subject, memoir_text):
 
 
 def generate_filename(title, author_id):
-    filename = title.replace(' ','_')+'_'+str(author_id)+'.txt'
+    forbidden_chars = '\'<>:/\\ ?*|"'
+    for char in forbidden_chars:
+        title = title.replace(char, '')
+    filename = title+'_'+str(author_id)+'.txt'
     return filename
 
 
