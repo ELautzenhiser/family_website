@@ -16,7 +16,7 @@
 				<option disabled selected value> </option>
 			{% endif %}
 			{% for person in family_members %}
-				<option value="{{ person['person_id'] }}"{% if author==person['person_id'] %} selected{% endif %}>
+				<option value="{{ person['person_id'] }}"{% if author_id==person['person_id'] %} selected{% endif %}>
 					{{ person['display_name'] }}
 				</option>
 			{% endfor %}
@@ -25,6 +25,10 @@
 		<label for='subject'>Subject</label>
 		<br>
 		<input id='subject' name='subject' value="{{ subject }}">
+		<br><br>
+		<label for 'year'>Year Written</label>
+		<br>
+		<input id='year' name='year' value="{{ year }}">
 		<br><br>
 		<label for='memoir_text'>Memoir</label>
 		<br>

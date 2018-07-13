@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from .db import display_name, insert_db, query_db
+from datetime import datetime
 
 bp = Blueprint('memoirs', __name__)
 
@@ -67,13 +68,14 @@ def create_memoir():
         title = request.form.get('title')
         author_id = request.form.get('author_id')
         subject = request.form.get('subject')
+        year = request.form.get('year')
         memoir_text = request.form.get('memoir_text')
-        errors = check_input(title, author_id, subject, memoir_text)
+        errors = check_input(title, author_id, subject, year, memoir_text)
         if not errors:
-            filename = generate_filename(title, author_id)
+            filename = generate_filename(title, author_id, year)
             errors = save_memoir_file(filename, memoir_text)
         if not errors:
-            save_memoir_db(title, author_id, subject, filename)
+            save_memoir_db(title, author_id, subject, year, filename)
         if errors:
             for error in errors:
                 flash(error)
@@ -82,12 +84,13 @@ def create_memoir():
                                    author_id=author_id,
                                    subject=subject,
                                    memoir_text=memoir_text,
+                                   year=year,
                                    family_members=family_members)
         else:
             return redirect(url_for('memoirs.view_memoirs'))
         
         
-    return render_template('create_memoir.html', family_members=family_members)
+    return render_template('create_memoir.html', family_members=family_members, year=2018)
 
 
 def get_family_members():
@@ -96,8 +99,15 @@ def get_family_members():
     return query_db(query, -1)
 
 
-def check_input(title, author_id, subject, memoir_text):
+def check_input(title, author_id, subject, year, memoir_text):
     errors = []
+    try:
+        year = int(year)
+        this_year = datetime.today().year
+        if year < 1700 or year > this_year:
+            errors.append("You couldn't possibly have a Lautzenhiser memoir from that year!")
+    except Exception as e:
+        errors.append('The year must be numeric and in the past three hundred years.')
     existing_query = 'SELECT memoir_id FROM Memoirs ' \
                      'WHERE title="{0}" AND author_id={1}'.format(title, author_id)
     results = query_db(existing_query, 1)
@@ -107,11 +117,11 @@ def check_input(title, author_id, subject, memoir_text):
     return errors
 
 
-def generate_filename(title, author_id):
+def generate_filename(title, author_id, year):
     forbidden_chars = '\'<>:/\\ ?*|"'
     for char in forbidden_chars:
         title = title.replace(char, '')
-    filename = title+'_'+str(author_id)+'.txt'
+    filename = title+'_'+str(author_id)+'_'+str(year)+'.txt'
     return filename
 
 
@@ -125,11 +135,11 @@ def save_memoir_file(filename, memoir_text):
         errors.append(str(e))
     return errors
 
-def save_memoir_db(title, author_id, subject, filename):
+def save_memoir_db(title, author_id, subject, year, filename):
     insert_sql = 'INSERT INTO Memoirs (title, author_id, year_written, subject, filename) ' \
                  'VALUES ("{0}", {1}, {2}, "{3}", "{4}")'.format(title,
                                                                  author_id,
-                                                                 2018,
+                                                                 year,
                                                                  subject,
                                                                  filename)
     insert_db(insert_sql)
