@@ -87,6 +87,7 @@ def create_memoir():
                                    year=year,
                                    family_members=family_members)
         else:
+            flash('Memoir saved successfully!')
             return redirect(url_for('memoirs.view_memoirs'))
         
         
