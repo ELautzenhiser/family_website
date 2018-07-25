@@ -1,19 +1,45 @@
-import sqlite3
+import pymysql
 import click
 import os
 from flask import current_app, g
 from flask.cli import with_appcontext
 
+def parse_sql(filename):
+     with current_app.open_resource(filename) as file:
+          data = file.read().decode('utf8').split('\n')
+          statements = []
+          DELIMITER = ';'
+          statement = ''
+
+          for line_num, line in enumerate(data):
+               if not line.strip():
+                    continue
+
+               elif DELIMITER not in line:
+                    statement += line
+
+               elif statement:
+                    statement += line
+                    statements.append(statement.strip())
+                    statement = ''
+               else:
+                    statements.append(line.strip())
+          return statements
+
+        
 def open_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
+     if 'db' not in g:
+          g.db = pymysql.connect(host=sql_vals['host'],
+                          port=sql_vals['port'],
+                          db=sql_vals['db'],
+                          user=sql_vals['user'],
+                          password=sql_vals['password'])
+     return g.db
 
-    return g.db
 
+def get_db():
+    c = open_db()
+    return c.cursor(pymysql.cursors.DictCursor)
 
 def close_db(e=None):
     db = g.pop('db', None)
@@ -25,12 +51,16 @@ def close_db(e=None):
 def init_db():
     db = open_db()
 
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+    db_statements = parse_sql(current_app.open_resource('schema.sql'))
+    
         
     data_file = os.path.join(current_app.instance_path, 'family_data.sql')
-    with current_app.open_resource(data_file) as f:
-        db.executescript(f.read().decode('utf8'))
+    db_statements.append(parse_ql(data_file))
+
+    with db.cursor() as cursor:
+        for statement in statements:
+            cursor.execute(statement)
+    db.commit()
 
 @click.command('init-db')
 @with_appcontext
@@ -43,16 +73,16 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
 
-
 def query_db(query, num_rows=-1):
-    db = open_db()
-    results = db.execute(query)
-    if num_rows == 1:
-        return results.fetchone()
-    elif num_rows == -1:
-        return results.fetchall()
-    else:
-        return cursor.fetchmany(num_rows)
+     db = open_db()
+     with db.cursor(pymysql.cursors.DictCursor) as cursor:
+          cursor.execute(query)
+     if num_rows == 1:
+          return cursor.fetchone()
+     elif num_rows == -1:
+          return cursor.fetchall()
+     else:
+          return cursor.fetchmany(num_rows)
 
 def insert_db(query):
     db = open_db()
