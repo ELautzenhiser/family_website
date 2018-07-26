@@ -1,6 +1,7 @@
 import pymysql
 import click
 import os
+from db_config import *
 from flask import current_app, g
 from flask.cli import with_appcontext
 
@@ -30,7 +31,6 @@ def parse_sql(filename):
 def open_db():
      if 'db' not in g:
           g.db = pymysql.connect(host=sql_vals['host'],
-                          port=sql_vals['port'],
                           db=sql_vals['db'],
                           user=sql_vals['user'],
                           password=sql_vals['password'])
@@ -51,14 +51,14 @@ def close_db(e=None):
 def init_db():
     db = open_db()
 
-    db_statements = parse_sql(current_app.open_resource('schema.sql'))
+    db_statements = parse_sql('schema.sql')
     
         
     data_file = os.path.join(current_app.instance_path, 'family_data.sql')
-    db_statements.append(parse_ql(data_file))
+    db_statements += parse_sql(data_file)
 
     with db.cursor() as cursor:
-        for statement in statements:
+        for statement in db_statements:
             cursor.execute(statement)
     db.commit()
 
