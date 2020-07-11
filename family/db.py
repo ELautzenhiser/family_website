@@ -1,7 +1,7 @@
 import pymysql
 import click
 import os
-from db_config import *
+from .db_config import *
 from flask import current_app, g
 from flask.cli import with_appcontext
 
@@ -34,6 +34,7 @@ def open_db():
                           db=sql_vals['db'],
                           user=sql_vals['user'],
                           password=sql_vals['password'])
+               
      return g.db
 
 
@@ -47,7 +48,6 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
-
 def init_db():
     db = open_db()
 
@@ -59,7 +59,7 @@ def init_db():
 
     with db.cursor() as cursor:
         for statement in db_statements:
-            cursor.execute(statement)
+             cursor.execute(statement)
     db.commit()
 
 @click.command('init-db')
@@ -104,6 +104,6 @@ def get_db_row(table, id):
 def display_name(table_abbreviation='', alias='display_name'):
     if table_abbreviation != '':
         table_abbreviation += '.'
-    query = 'CASE WHEN {0}preferred_name THEN {0}preferred_name || " " || {0}last_name ' \
-            'ELSE {0}first_name || " " || {0}last_name END AS {1}'.format(table_abbreviation, alias)
+    query = 'CASE WHEN {0}preferred_name IS NOT NULL THEN CONCAT_WS(" ", {0}preferred_name, {0}last_name) ' \
+            'ELSE CONCAT_WS(" ",{0}first_name, {0}last_name) END AS {1}'.format(table_abbreviation, alias)
     return query

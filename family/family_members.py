@@ -33,8 +33,8 @@ def get_memoirs(person_id):
     return query_db(query)
 
 def get_photos(person_id):
-    PHOTO_FOLDER = os.path.join(current_app.instance_path, 'images\\')
-    query = 'SELECT "{0}" || p.filename as file_location, ' \
+    PHOTO_FOLDER = os.path.join(current_app.instance_path, 'images')
+    query = 'SELECT CONCAT("{0}", p.filename) as file_location, ' \
             'p.description FROM Photos p ' \
             'INNER JOIN Photo_tags pt on p.photo_id=pt.photo_id ' \
             'WHERE pt.person_id={1}'.format(PHOTO_FOLDER, person_id)
