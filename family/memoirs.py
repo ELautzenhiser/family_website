@@ -65,6 +65,8 @@ def convert_to_html(text):
 def create_memoir():
     family_members = get_family_members() 
     if request.method == 'POST':
+        if request.form.get('action') != 'Save':
+            return redirect(url_for('memoirs.view_memoirs'))
         title = request.form.get('title')
         author_id = request.form.get('author_id')
         subject = request.form.get('subject')
