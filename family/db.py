@@ -84,10 +84,11 @@ def query_db(query, num_rows=-1):
      else:
           return cursor.fetchmany(num_rows)
 
-def insert_db(query):
-    db = open_db()
-    db.execute(query)
-    db.commit()
+def insert_db(query, values):
+     db = open_db()
+     with db.cursor(pymysql.cursors.DictCursor) as cursor:
+          cursor.execute(query,values)
+     db.commit()
 
 def get_all_rows(table):
     query = 'SELECT * FROM {0}'.format(table)

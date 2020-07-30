@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block header %}
+	<h1>{% block title %}Add Family Member{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+	<form method=post enctype=multipart/form-data>
+		<label for='first_name'>first_name</label>
+		<br>
+		<input id='first_name' name='first_name' value='{{ first_name }}' required>
+		<br><br>
+		<label for='last_name'>last_name</label>
+		<br>
+		<input id='last_name' name='last_name' value='{{ last_name }}' required>
+		<br><br>
+		<label for='middle_name'>middle_name</label>
+		<br>
+		<input id='middle_name' name='middle_name' value='{{ middle_name }}'>
+		<br><br>
+		<label for='preferred_name'>preferred_name</label>
+		<br>
+		<input id='preferred_name' name='preferred_name' value='{{ preferred_name }}'>
+		<br><br>
+		<label for='birth_year'>birth_year</label>
+		<br>
+		<input id='birth_year' name='birth_year' value='{{ birth_year }}'>
+		<br><br>
+		<label for='birth_month'>birth_month</label>
+		<br>
+		<input id='birth_month' name='birth_month' value='{{ birth_month }}'>
+		<br><br>
+		<label for='birth_day'>birth_day</label>
+		<br>
+		<input id='birth_day' name='birth_day' value='{{ birth_day }}'>
+		<br><br>
+		<label for='gender'>gender</label>
+		<br>
+		<select id='gender' name='gender'>
+			{% if not gender %}
+				<option disabled selected value> </option>
+			{% endif %}
+			<option value="{{ 'F' }}"{% if gender=='F' %} selected{% endif %}>F</option>
+			<option value="{{ 'M' }}"{% if gender=='M' %} selected{% endif %}>M</option>
+		</select>
+		<br><br>
+		<label for='mother'>mother</label>
+		<br>
+		<select id='mother_id' name='mother_id'>
+			{% if not mother %}
+				<option disabled selected value> </option>
+			{% endif %}
+			{% for person in family_members %}
+				{% if person['gender']=='F' %}
+					<option value="{{ person['person_id'] }}"{% if mother_id==person['person_id'] %} selected{% endif %}>
+						{{ person['display_name'] }}
+					</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+		<br><br>
+		<label for='father_id'>father</label>
+		<br>
+		<select id='father_id' name='father_id'>
+			{% if not father %}
+				<option disabled selected value> </option>
+			{% endif %}
+			{% for person in family_members %}
+				{% if person['gender']=='M' %}
+					<option value="{{ person['person_id'] }}"{% if father_id==person['person_id'] %} selected{% endif %}>
+						{{ person['display_name'] }}
+					</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+		<br>
+		<br>
+		<label for='spouse_id'>spouse</label>
+		<br>
+		<select id='spouse_id' name='spouse_id'>
+			{% if not spouse %}
+				<option disabled selected value> </option>
+			{% endif %}
+			{% for person in family_members %}
+				<option value="{{ person['person_id'] }}"{% if spouse_id==person['person_id'] %} selected{% endif %}>
+					{{ person['display_name'] }}
+				</option>
+			{% endfor %}
+		</select>
+		<br>
+		<br>
+		<input type=submit name='action' value='Save'>
+		<input type=submit name='action' value='Cancel' formnovalidate>
+	</form>
+{% endblock %}

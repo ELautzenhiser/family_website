@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, redirect, \
+     render_template, request, url_for
 from .db import display_name, insert_db, query_db
 from datetime import datetime
 
@@ -21,14 +22,15 @@ def memoir(memoir_id):
 def get_memoirs():
     name_sql = display_name('p','author_name')
     query = 'SELECT m.memoir_id, m.title, {0} ' \
-            'FROM Memoirs m INNER JOIN People p on m.author_id=p.person_id'.format(name_sql)
+            'FROM Memoirs m INNER JOIN People p ' \
+            'on m.author_id=p.person_id'.format(name_sql)
     return query_db(query)
 
 
 def get_memoir_from_id(memoir_id):
     name_sql = display_name('p', 'author_name')
-    query = 'SELECT m.title, m.year_written, m.subject, m.filename, m.author_id, ' \
-            '{0} ' \
+    query = 'SELECT m.title, m.year_written, m.subject, ' \
+            'm.filename, m.author_id, {0} ' \
             'FROM Memoirs m INNER JOIN People p on m.author_id=p.person_id ' \
             'WHERE m.memoir_id={1}'.format(name_sql, memoir_id)
     return query_db(query, 1)
@@ -93,12 +95,15 @@ def create_memoir():
             return redirect(url_for('memoirs.view_memoirs'))
         
         
-    return render_template('create_memoir.html', family_members=family_members, year=2018)
+    return render_template('create_memoir.html',
+                           family_members=family_members,
+                           year=datetime.today().year)
 
 
 def get_family_members():
     display_sql = display_name()
-    query = 'SELECT person_id, {0} FROM People ORDER BY display_name'.format(display_sql)
+    query = 'SELECT person_id, {0} ' \
+            'FROM People ORDER BY display_name'.format(display_sql)
     return query_db(query, -1)
 
 
@@ -108,15 +113,18 @@ def check_input(title, author_id, subject, year, memoir_text):
         year = int(year)
         this_year = datetime.today().year
         if year < 1700 or year > this_year:
-            errors.append("You couldn't possibly have a Lautzenhiser memoir from that year!")
+            errors.append('You couldn\'t possibly have a Lautzenhiser memoir' \
+                          'from that year!')
     except Exception as e:
-        errors.append('The year must be numeric and in the past three hundred years.')
+        errors.append('The year must be numeric and in the past ' \
+                      'three hundred years.')
     existing_query = 'SELECT memoir_id FROM Memoirs ' \
-                     'WHERE title="{0}" AND author_id={1}'.format(title, author_id)
+                     'WHERE title="{0}" AND author_id={1}'.format(title,
+                                                                  author_id)
     results = query_db(existing_query, 1)
     if results:
-        errors.append("You've already created a memoir named {0}. " \
-                      "Please choose a new name.".format(title))
+        errors.append('You\'ve already created a memoir named {0}. ' \
+                      'Please choose a new name.'.format(title))
     return errors
 
 
@@ -140,10 +148,6 @@ def save_memoir_file(filename, memoir_text):
 
 def save_memoir_db(title, author_id, subject, year, filename):
     insert_sql = 'INSERT INTO Memoirs (title, author_id, year_written, subject, filename) ' \
-                 'VALUES ("{0}", {1}, {2}, "{3}", "{4}")'.format(title,
-                                                                 author_id,
-                                                                 year,
-                                                                 subject,
-                                                                 filename)
-    insert_db(insert_sql)
+                 'VALUES (%s, %s, %s, %s, %s)'
+    insert_db(insert_sql, (title,author_id,year,subject,filename))
                                                                  
