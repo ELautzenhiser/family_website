@@ -88,7 +88,9 @@ def insert_db(query, values):
      db = open_db()
      with db.cursor(pymysql.cursors.DictCursor) as cursor:
           cursor.execute(query,values)
+          new_id = cursor.lastrowid
      db.commit()
+     return new_id
 
 def get_all_rows(table):
     query = 'SELECT * FROM {0}'.format(table)
@@ -105,6 +107,8 @@ def get_db_row(table, id):
 def display_name(table_abbreviation='', alias='display_name'):
     if table_abbreviation != '':
         table_abbreviation += '.'
-    query = 'CASE WHEN {0}preferred_name IS NOT NULL THEN CONCAT_WS(" ", {0}preferred_name, {0}last_name) ' \
-            'ELSE CONCAT_WS(" ",{0}first_name, {0}last_name) END AS {1}'.format(table_abbreviation, alias)
+    query = 'CASE WHEN {0}preferred_name IS NOT NULL ' \
+            'THEN CONCAT_WS(" ", {0}preferred_name, {0}last_name) ' \
+            'ELSE CONCAT_WS(" ",{0}first_name, {0}last_name) ' \
+            'END AS {1}'.format(table_abbreviation, alias)
     return query

@@ -145,8 +145,12 @@ def save_family_member(first_name, last_name, middle_name, preferred_name,
     insert_sql = 'INSERT INTO PEOPLE (first_name, last_name, middle_name, preferred_name, ' \
                         'birth_year, birth_month, birth_day, gender, mother_id, father_id) ' \
                         'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-    insert_db(insert_sql,(first_name, last_name, middle_name, preferred_name, birth_year,
+    person_id = insert_db(insert_sql,(first_name, last_name, middle_name, preferred_name, birth_year,
                             birth_month, birth_day, gender, mother_id, father_id))
+    if spouse_id:
+        insert_sql = 'INSERT INTO MARRIAGES (spouse1, spouse2) VALUES (%s, %s)'
+        insert_db(insert_sql, (person_id,spouse_id))
+
 
 def check_input(first_name, last_name, middle_name, preferred_name, birth_year, birth_month,
                 birth_day, gender, mother_id, father_id, spouse_id):
@@ -165,7 +169,7 @@ def check_input(first_name, last_name, middle_name, preferred_name, birth_year, 
             if birth_day < 1 or birth_day > 21:
                 errors.append('The day must be between 1 and 31.')
         if birth_year and birth_month and birth_day:
-            datetime.datetime(birth_year, birth_month, birth_day)
+            datetime(birth_year, birth_month, birth_day)
     except Exception as e:
         print(e)
         errors.append('The birth date must be in the format yyyy, MM, dd.')
