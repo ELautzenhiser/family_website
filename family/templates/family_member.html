@@ -33,6 +33,15 @@
 		{% endfor %}
 	</div>
 {% endif %}
+{% if family_member['spouses'] %}
+	<div class='links_div'>
+		<h4 class='link_header'>Spouse</h4>
+		{% for spouse in family_member['spouses'] %}
+			<a href="{{ url_for('family.view_family_member', person_id=spouse['person_id']) }}" class='family_link'>
+				{{ spouse['spouse_name'] }}</a>
+		{% endfor %}
+	</div>
+{% endif %}
 {% if family_member['siblings'] %}
 	<div class='links_div'>
 		<h4 class='link_header'>Siblings</h4>
